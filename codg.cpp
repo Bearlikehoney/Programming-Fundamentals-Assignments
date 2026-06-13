@@ -1,3 +1,19 @@
+/*
+   Course: CCP6114 Programming Fundamentals
+   Lecture Class: TC1L
+   Tutorial Class: TT4L
+   Trimester: 2520
+   Information : 
+   252UC24001 | ZUL FADHLI ZAIMAN | ZUL.FADHLI.ZAIMAN1@STUDENT.MMU.EDU.MY
+
+   253UC255Q0 | GHITH EMAM | EMAM.GHITH@STUDENT.MMU.EDY.MY
+   
+   261UC260WG | RINAD ABOBAKER MOHAMED | RINAD.ABOBAKER.MOHAMED@STUDENT.MMU.EDU.MY
+   
+   261UC2610E | FAISA HUSSEIN ABDULLAHI | HUSSEIN.FAISA.ABDULLAHI@STUDENT.MMU.STUDENT.MY
+*/
+
+
 #include <iostream>
 #include <string>
 using namespace std;
@@ -63,7 +79,7 @@ void deleteBoard(char** board, int size) {
 int main() {
     int boardSize = 0;
 
-    cout << "== Welcome to Checkers Game, made in MMU ==\n";
+    cout << "== Welcome to Checkers Game, made in MMU by Zul, Ghith, Rinad and Faiza ==\n";
 
     // التحقق من المدخلات: إجبار المستخدم على اختيار حجم بين 6 و 10
     while (true) {
@@ -80,7 +96,7 @@ int main() {
     char** gameBoard = createBoard(boardSize);
     initializeBoard(gameBoard, boardSize);
 
-    cout << "\n-- Initial Board Setup (" << boardSize << "x" << boardSize << ") ---\n";
+    cout << "\n-- Initial Board Setup (" <<boardSize <<"x"<< boardSize << ") --\n";
     displayBoard(gameBoard, boardSize);
 
     // تنظيف الذاكرة قبل الخروج
