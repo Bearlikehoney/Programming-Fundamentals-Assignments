@@ -79,9 +79,10 @@ void displayBoard(char** board, int size) {
     cout << "\n\n";
 }
 
-// دالة مخصصة لحفظ حالة اللعبة الحالية في ملف نصي خارجي
-void saveGame(char** board, int size) {
-    ofstream outFile("savegame.txt");
+// دالة مخصصة لحفظ حالة اللعبة الحالية في ملف نصي خارجي (مع اختيار رقم الفتحة)
+void saveGame(char** board, int size, int slot) {
+    string filename = "savegame" + to_string(slot) + ".txt";
+    ofstream outFile(filename);
     if (outFile.is_open()) {
         outFile << size << endl;
         for (int r = 0; r < size; r++) {
@@ -95,17 +96,18 @@ void saveGame(char** board, int size) {
             outFile << endl;
         }
         outFile.close();
-        cout << "Game saved successfully!\n";
+        cout << "Game saved successfully in slot " << slot << "!\n";
     } else {
         cout << "Error: Could not save the game.\n";
     }
 }
 
-// دالة مخصصة لتحميل ملف الحفظ واسترجاع اللوحة
-char** loadGame(int& size) {
-    ifstream inFile("savegame.txt");
+// دالة مخصصة لتحميل ملف الحفظ واسترجاع اللوحة (مع اختيار رقم الفتحة)
+char** loadGame(int& size, int slot) {
+    string filename = "savegame" + to_string(slot) + ".txt";
+    ifstream inFile(filename);
     if (!inFile.is_open()) {
-        cout << "No saved game found! Starting a new game instead...\n";
+        cout << "No saved game found in slot " << slot << "!\n";
         return nullptr;
     }
     inFile >> size;
@@ -122,7 +124,7 @@ char** loadGame(int& size) {
         }
     }
     inFile.close();
-    cout << "Game loaded successfully!\n";
+    cout << "Game loaded successfully from slot " << slot << "!\n";
     return board;
 }
 
@@ -220,6 +222,24 @@ void deleteBoard(char** board, int size) {
     delete[] board;
 }
 
+// دالة مساعدة لطلب رقم فتحة الحفظ (1-3) مع التحقق من الإدخال
+int getSaveSlot() {
+    int slot = 0;
+    while (true) {
+        cout << "Choose save slot (1, 2, or 3): ";
+        cin >> slot;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input! Please enter a number (1, 2, or 3)." << endl;
+            continue;
+        }
+        if (slot >= 1 && slot <= 3) break;
+        cout << "Invalid slot! Please enter 1, 2, or 3." << endl;
+    }
+    return slot;
+}
+
 // === دالة التحكم والتشغيل الرئيسية للمشروع ===
 int main() {
     int boardSize = 0;
@@ -259,8 +279,13 @@ int main() {
 
     // خيار تحميل اللعبة السابقة
     if (menuChoice == 2) {
-        gameBoard = loadGame(boardSize);
-        if (gameBoard == nullptr) menuChoice = 1;
+        int slot = getSaveSlot();   // اطلب رقم الفتحة
+        gameBoard = loadGame(boardSize, slot);
+        if (gameBoard == nullptr) {
+            // إذا لم يوجد ملف في هذه الفتحة، ننتقل تلقائياً لبدء لعبة جديدة
+            cout << "Starting a new game instead...\n";
+            menuChoice = 1;
+        }
     }
 
     // خيار بدء لعبة جديدة واختيار الحجم
@@ -294,7 +319,8 @@ int main() {
         cin >> fromCoord;
 
         if (fromCoord == "SAVE" || fromCoord == "save") {
-            saveGame(gameBoard, boardSize);
+            int slot = getSaveSlot();   // اختر الفتحة للحفظ
+            saveGame(gameBoard, boardSize, slot);
             break;
         }
 
