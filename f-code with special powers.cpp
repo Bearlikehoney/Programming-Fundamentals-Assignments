@@ -12,8 +12,9 @@
 
 #include <iostream>
 #include <string>
-#include <fstream> // مكتبة التعامل مع الملفات (مهمة لخيار حفظ وتحميل اللعبة)
-#include <cmath>   // مطلوبة لحساب المسافات والقيمة المطلقة abs()
+#include <fstream>
+#include <cmath>
+#include <limits>   // for numeric_limits
 
 using namespace std;
 
@@ -32,12 +33,11 @@ void initializeBoard(char** board, int size) {
 
     for (int r = 0; r < size; r++) {
         for (int c = 0; c < size; c++) {
-            // الشرط (r + c) % 2 == 1 يضمن التوزيع المتبادل مطابقاً لصورة الواجب تماماً
             if ((r + c) % 2 == 1) {
                 if (r < rowsOfPieces) {
-                    board[r][c] = 'O'; // قطع اللاعب الأول في الأعلى
+                    board[r][c] = 'O';
                 } else if (r >= size - rowsOfPieces) {
-                    board[r][c] = 'X'; // قطع اللاعب الثاني في الأسفل
+                    board[r][c] = 'X';
                 } else {
                     board[r][c] = ' ';
                 }
@@ -191,6 +191,12 @@ void checkForPromotion(char** board, int size, int r, int c, char currentPlayer)
         while (true) {
             cout << "Your Choice (1, 2, or 3): ";
             cin >> powerChoice;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid input! Please enter a number (1, 2, or 3)." << endl;
+                continue;
+            }
             if (powerChoice >= 1 && powerChoice <= 3) break;
             cout << "Invalid choice! Please choose 1, 2, or 3." << endl;
         }
@@ -237,10 +243,16 @@ int main() {
     cout << "[1] NEW GAME\n";
     cout << "[2] CONTINUE (Load Game)\n";
 
-    // حلقة التحقق من صحة اختيار القائمة
+    // حلقة التحقق من صحة اختيار القائمة مع معالجة الإدخال غير الرقمي
     while (true) {
         cout << "Your Input (1 or 2): ";
         cin >> menuChoice;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input! Please enter a number (1 or 2).\n";
+            continue;
+        }
         if (menuChoice == 1 || menuChoice == 2) break;
         cout << "Invalid selection! Please enter 1 or 2.\n";
     }
@@ -256,6 +268,12 @@ int main() {
         while (true) {
             cout << "Enter board size (6 to 10): ";
             cin >> boardSize;
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid input! Please enter a number.\n";
+                continue;
+            }
             if (boardSize >= 6 && boardSize <= 10) break;
             cout << "Invalid size! Please try again.\n";
         }
